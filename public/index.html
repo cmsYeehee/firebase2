@@ -4,17 +4,45 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Website</title>
-  
-  <!-- Link to external CSS file -->
-  <link rel="stylesheet" href="/styles.css">
+  <style>
+    /* Basic styling for the page */
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    /* Snail image styling */
+    #snail {
+      position: absolute;
+      bottom: 50px;
+      left: 0;
+      width: 100px;
+      height: auto;
+      transition: transform 0.1s ease-in-out;
+    }
+
+    /* Animation for moving the snail */
+    @keyframes moveSnail {
+      from {
+        transform: translateX(0);
+      }
+      to {
+        transform: translateX(100vw); /* Moves the snail across the screen */
+      }
+    }
+
+    /* Apply the animation */
+    .moving {
+      animation: moveSnail 10s linear infinite;
+    }
+  </style>
 </head>
 <body>
   <h1>Welcome to My Animal Website</h1>
 
-  <!-- Panda image with proper size -->
-  <img id="panda" src="/images/panda.jpg" alt="Cute Panda">
+  <!-- Panda image -->
+  <img src="/images/panda.jpg" alt="Cute Panda" style="width:400px;height:auto;">
 
-  <!-- Snail image with proper size and movement -->
+  <!-- Snail image -->
   <img id="snail" src="/images/snail.png" alt="Moving Snail">
 
   <script>
