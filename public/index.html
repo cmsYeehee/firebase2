@@ -1,70 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Website</title>
-  <style>
-    /* Basic styling for the page */
-    body {
-      font-family: Arial, sans-serif;
-    }
-    
-    /* Snail image styling */
-    #snail {
-      position: absolute;
-      bottom: 50px;
-      left: 0;
-      width: 100px;
-      height: auto;
-      transition: transform 0.1s ease-in-out;
-    }
-
-    /* Animation for moving the snail */
-    @keyframes moveSnail {
-      from {
-        transform: translateX(0);
-      }
-      to {
-        transform: translateX(100vw); /* Moves the snail across the screen */
-      }
-    }
-
-    /* Apply the animation */
-    .moving {
-      animation: moveSnail 10s linear infinite;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to My Website!</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Welcome to My Animal Website</h1>
+    <h1>Welcome to my website</h1>
+    <div class="snail-container">
+        <img src="images/snail.png" alt="Snail" id="snail">
+    </div>
 
-  <!-- Panda image -->
-  <img src="/images/panda.jpg" alt="Cute Panda" style="width:400px;height:auto;">
+    <script>
+        // Select the snail element
+        const snail = document.getElementById('snail');
+        let position = 0; // Initial position of the snail
+        let isMoving = true; // Control the movement
 
-  <!-- Snail image -->
-  <img id="snail" src="/images/snail.png" alt="Moving Snail">
+        // Function to move the snail
+        function moveSnail() {
+            if (isMoving) {
+                position += 1; // Move the snail 1 pixel to the right
+                snail.style.left = position + 'px'; // Update snail position
 
-  <script>
-    // Get the snail element
-    const snail = document.getElementById('snail');
+                // If the snail reaches the end of the screen, reset to start
+                if (position < window.innerWidth - snail.offsetWidth) {
+                    requestAnimationFrame(moveSnail);
+                }
+            }
+        }
 
-    // Function to start moving the snail
-    function startMovingSnail() {
-      snail.classList.add('moving');
-    }
+        // Start moving the snail
+        requestAnimationFrame(moveSnail);
 
-    // Function to stop moving the snail
-    function stopMovingSnail() {
-      snail.classList.remove('moving');
-    }
+        // Stop the snail when the cursor touches it
+        snail.addEventListener('mouseenter', () => {
+            isMoving = false; // Stop the movement
+        });
 
-    // Start the snail movement when the page loads
-    window.onload = startMovingSnail;
-
-    // Add event listeners to stop and resume the snail on hover
-    snail.addEventListener('mouseenter', stopMovingSnail); // Stop moving on hover
-    snail.addEventListener('mouseleave', startMovingSnail); // Resume moving when the mouse leaves
-  </script>
+        // Resume movement when the cursor leaves the snail
+        snail.addEventListener('mouseleave', () => {
+            isMoving = true; // Resume the movement
+            requestAnimationFrame(moveSnail);
+        });
+    </script>
 </body>
 </html>
