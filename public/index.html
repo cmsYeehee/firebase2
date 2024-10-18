@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Website</title>
+  
+  <!-- Link to external CSS file -->
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <h1>Welcome to My Animal Website</h1>
+
+  <!-- Panda image with proper size -->
+  <img id="panda" src="/images/panda.jpg" alt="Cute Panda">
+
+  <!-- Snail image with proper size and movement -->
+  <img id="snail" src="/images/snail.png" alt="Moving Snail">
+
+  <script>
+    // Get the snail element
+    const snail = document.getElementById('snail');
+
+    // Function to start moving the snail
+    function startMovingSnail() {
+      snail.classList.add('moving');
+    }
+
+    // Function to stop moving the snail
+    function stopMovingSnail() {
+      snail.classList.remove('moving');
+    }
+
+    // Start the snail movement when the page loads
+    window.onload = startMovingSnail;
+
+    // Add event listeners to stop and resume the snail on hover
+    snail.addEventListener('mouseenter', stopMovingSnail); // Stop moving on hover
+    snail.addEventListener('mouseleave', startMovingSnail); // Resume moving when the mouse leaves
+  </script>
+</body>
+</html>

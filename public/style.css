@@ -1,0 +1,51 @@
+/* Basic styling for the page */
+body {
+    font-family: Arial, sans-serif;
+    background-color: teal;  /* Change background to teal */
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;  /* Center the text */
+  }
+  
+  /* Styling for the heading */
+  h1 {
+    color: white;  /* Make the heading text white for better contrast */
+    font-size: 2.5rem;  /* Adjust font size */
+  }
+  
+  /* Styling for the panda image */
+  #panda {
+    width: 400px;  /* Explicit width for panda image */
+    height: auto;  /* Maintain aspect ratio */
+  }
+  
+  /* Snail image styling */
+  #snail {
+    position: absolute;
+    bottom: 50px;
+    left: 0;
+    width: 150px;  /* Adjusted size for the snail image */
+    height: auto;  /* Maintain aspect ratio */
+    transition: transform 0.1s ease-in-out;
+  }
+  
+  /* Animation for moving the snail */
+  @keyframes moveSnail {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(100vw); /* Moves the snail across the screen */
+    }
+  }
+  
+  /* Apply the animation */
+  .moving {
+    animation: moveSnail 10s linear infinite;
+  }
+  
