@@ -1,93 +1,251 @@
-/* Set the background color to teal */
-body {
-    background-color: teal;
+/* Reset and base styles */
+* {
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    height: 100vh;
-    overflow: hidden; /* Prevent scrolling */
+    box-sizing: border-box;
 }
 
-/* Center the title with a larger orange font */
-h1 {
-    color: orange;
-    text-align: center;
-    margin-top: 20px;
-    font-family: Arial, sans-serif;
-    font-size: 48px; /* Increased font size */
-}
-
-/* Style for the note below the title */
-.note {
-    color: white;
-    font-family: Arial, sans-serif;
-    font-size: 18px; /* Small note font */
-    margin-bottom: 20px;
-}
-
-/* Container to hold snail and lettuce */
-.snail-container {
-    position: relative;
-    width: 100%;
-    height: calc(100vh - 60px);
+body {
     overflow: hidden;
+    background: #000;
+    font-family: Arial, sans-serif;
 }
 
-/* Style for the snail image */
-#snail {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    width: 100px;
-    transition: transform 0.2s ease;
-}
-
-/* Style for the lettuce image */
-#lettuce {
-    position: absolute;
-    width: 100px;
-    cursor: grab;
-}
-
-/* Snow layer rising from the bottom of the screen */
-.snow-layer {
-    position: absolute;
-    bottom: 0;
-    left: 0;
+/* Scene container */
+#scene-container {
+    position: fixed;
     width: 100%;
-    height: 0;
-    background-color: white;
-    transition: height 0.2s ease;
+    height: 100%;
 }
 
-/* Hail container to hold hail dots */
-#hail-container {
-    position: absolute;
+/* Loading screen */
+.loading-screen {
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    pointer-events: none; /* Allow interaction with elements beneath */
-    z-index: -1; /* Keep hail behind other elements */
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: white;
+    font-family: Arial, sans-serif;
+    z-index: 1000;
 }
 
-/* Style for hail dots */
-.hail-dot {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    background-color: white;
-    border-radius: 50%;
+.loading-screen h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #4f9cff;
+    text-shadow: 0 0 10px rgba(79, 156, 255, 0.5);
+}
+
+.loading-text {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #4f9cff;
+    text-align: center;
+}
+
+.loading-bar {
+    width: 300px;
+    height: 6px;
+    background: #1a1a1a;
+    margin-top: 20px;
+    border-radius: 3px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(79, 156, 255, 0.3);
+}
+
+.loading-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #4f9cff, #83b9ff);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+/* Planet info panel */
+.planet-info {
+    position: fixed;
+    right: 20px;
+    top: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+    max-width: 300px;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 0 20px rgba(79, 156, 255, 0.2);
+}
+
+.planet-info h2 {
+    margin-bottom: 10px;
+    color: #4f9cff;
+    font-size: 20px;
+    text-shadow: 0 0 5px rgba(79, 156, 255, 0.5);
+}
+
+.planet-info p {
+    line-height: 1.4;
+    font-size: 14px;
+}
+
+/* Error message */
+.error-message {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: rgba(255, 0, 0, 0.7);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-family: Arial, sans-serif;
+    display: none;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+}
+
+/* Planet screen */
+.planet-screen {
+    position: fixed;
     top: 0;
-    animation: fall 5s linear infinite;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+    z-index: 1000;
 }
 
-/* Falling animation */
-@keyframes fall {
+.planet-screen.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.planet-screen h1 {
+    color: white;
+    font-size: 48px;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s ease 0.3s;
+    text-shadow: 0 0 20px rgba(79, 156, 255, 0.5);
+}
+
+.planet-screen.active h1 {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.back-button {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    padding: 10px 20px;
+    background: rgba(79, 156, 255, 0.3);
+    border: 1px solid #4f9cff;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: all 0.5s ease 0.5s;
+    text-shadow: 0 0 10px rgba(79, 156, 255, 0.5);
+    box-shadow: 0 0 15px rgba(79, 156, 255, 0.2);
+}
+
+.planet-screen.active .back-button {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.back-button:hover {
+    background: rgba(79, 156, 255, 0.5);
+}
+
+/* Loading animation */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Planet hover effect */
+.planet-hover {
+    animation: glow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from {
+        box-shadow: 0 0 10px #fff,
+                    0 0 20px #fff,
+                    0 0 30px #4f9cff;
+    }
     to {
-        transform: translateY(100vh);
+        box-shadow: 0 0 20px #fff,
+                    0 0 30px #4f9cff,
+                    0 0 40px #4f9cff;
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .planet-info {
+        right: 10px;
+        top: 10px;
+        max-width: 250px;
+        padding: 15px;
+    }
+
+    .planet-info h2 {
+        font-size: 18px;
+    }
+
+    .planet-info p {
+        font-size: 12px;
+    }
+
+    .loading-bar {
+        width: 250px;
+    }
+
+    .planet-screen h1 {
+        font-size: 36px;
+    }
+
+    .back-button {
+        padding: 8px 16px;
+        font-size: 12px;
+    }
+}
+
+/* Small screens */
+@media (max-width: 480px) {
+    .loading-screen h2 {
+        font-size: 20px;
+    }
+
+    .loading-bar {
+        width: 200px;
+    }
+
+    .planet-screen h1 {
+        font-size: 28px;
     }
 }

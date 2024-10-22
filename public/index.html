@@ -3,133 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to my website</title>
+    <title>Solar System Viewer</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 </head>
 <body>
-    <h1>Welcome to my website</h1>
-    <p class="note">The snail will follow the lettuce.</p>
+    <div id="scene-container"></div>
 
-    <!-- Snail and lettuce images -->
-    <div class="snail-container">
-        <img src="images/snail.png" alt="Snail" id="snail">
-        <img src="images/lettuce.png" alt="Lettuce" id="lettuce">
+    <div id="loading-screen" class="loading-screen">
+        <h2>Loading Space Scene</h2>
+        <div id="loading-text" class="loading-text">Initializing...</div>
+        <div class="loading-bar">
+            <div id="loading-bar-fill" class="loading-bar-fill"></div>
+        </div>
     </div>
 
-    <!-- Rising snow layer -->
-    <div class="snow-layer"></div>
+    <div id="planet-info" class="planet-info"></div>
+    <div id="error-message" class="error-message"></div>
 
-    <!-- Hail container for the dots -->
-    <div id="hail-container"></div>
-
-    <!-- Audio element for the "hi" sound -->
-    <audio id="hiSound" src="audio/hi.mp3"></audio> <!-- Make sure you have this mp3 file in the correct folder -->
-
-    <script>
-        const snail = document.getElementById('snail');
-        const lettuce = document.getElementById('lettuce');
-        let snailSpeed = 1; // Speed of the snail's movement
-
-        // Play the "hi" sound when the website is loaded
-        window.addEventListener('load', () => {
-            const hiSound = document.getElementById('hiSound');
-            hiSound.play();
-
-            // Position the snail on the right side of the screen
-            snail.style.left = (window.innerWidth - snail.offsetWidth - 20) + 'px';
-            snail.style.top = (window.innerHeight / 2 - snail.offsetHeight / 2) + 'px';
-
-            // Position the lettuce on the left side of the screen
-            lettuce.style.left = '20px'; // A bit offset from the edge
-            lettuce.style.top = (window.innerHeight / 2 - lettuce.offsetHeight / 2) + 'px';
-        });
-
-        // Variables for dragging the lettuce
-        let isDragging = false, offsetX = 0, offsetY = 0;
-
-        // Function to move the snail toward the lettuce and rotate it to face the lettuce
-        function moveSnail() {
-            const snailRect = snail.getBoundingClientRect();
-            const lettuceRect = lettuce.getBoundingClientRect();
-
-            // Calculate the distance between the snail and the lettuce
-            const dx = lettuceRect.left + lettuceRect.width / 2 - (snailRect.left + snailRect.width / 2);
-            const dy = lettuceRect.top + lettuceRect.height / 2 - (snailRect.top + snailRect.height / 2);
-
-            // Move the snail towards the lettuce position
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            if (distance > 1) { // Only move the snail if it's not too close
-                snail.style.left = snail.offsetLeft + (dx * snailSpeed / distance) + 'px';
-                snail.style.top = snail.offsetTop + (dy * snailSpeed / distance) + 'px';
-            }
-
-            // Calculate the angle (in radians) and convert it to degrees
-            const angle = Math.atan2(dy, dx) * (180 / Math.PI);
-
-            // Rotate the snail to face the opposite direction (add 180 degrees)
-            snail.style.transform = `rotate(${angle + 180}deg)`;
-
-            // Continue moving the snail
-            requestAnimationFrame(moveSnail);
-        }
-
-        // Start moving the snail
-        requestAnimationFrame(moveSnail);
-
-        // Make the lettuce draggable
-        lettuce.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            offsetX = e.clientX - lettuce.getBoundingClientRect().left;
-            offsetY = e.clientY - lettuce.getBoundingClientRect().top;
-        });
-
-        document.addEventListener('mousemove', (e) => {
-            if (isDragging) {
-                lettuce.style.left = (e.clientX - offsetX) + 'px';
-                lettuce.style.top = (e.clientY - offsetY) + 'px';
-            }
-        });
-
-        document.addEventListener('mouseup', () => {
-            isDragging = false;
-        });
-
-        // Hail Effect: Create falling dots
-        function createHail() {
-            const hailContainer = document.getElementById('hail-container');
-            const hailDot = document.createElement('div');
-            hailDot.classList.add('hail-dot');
-
-            // Random horizontal starting position
-            hailDot.style.left = Math.random() * window.innerWidth + 'px';
-
-            // Append the dot to the container
-            hailContainer.appendChild(hailDot);
-
-            // Set a timeout to remove the dot once it reaches the bottom
-            setTimeout(() => {
-                hailContainer.removeChild(hailDot);
-            }, 5000); // Removes the hail dot after 5 seconds
-        }
-
-        // Continuously create hail dots every 200ms
-        setInterval(createHail, 200);
-
-        // Rising snow layer logic
-        const snowLayer = document.querySelector('.snow-layer');
-        let snowHeight = 0;
-
-        function riseSnow() {
-            // Gradually increase the height of the snow layer
-            snowHeight += 0.1; // You can adjust this value for speed
-            if (snowHeight <= window.innerHeight) {
-                snowLayer.style.height = snowHeight + 'px';
-            }
-        }
-
-        // Continuously increase the snow layer's height over time
-        setInterval(riseSnow, 100); // Adjust the interval for a slower or faster snow rise
-
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
