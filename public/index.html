@@ -7,13 +7,17 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Welcome to my website</h1>
-    
+    <h1>Welcome to My Website!</h1>
+    <p class="note">The snail will follow the lettuce.</p>
+
     <!-- Snail and lettuce images -->
     <div class="snail-container">
         <img src="images/snail.png" alt="Snail" id="snail">
         <img src="images/lettuce.png" alt="Lettuce" id="lettuce">
     </div>
+
+    <!-- Hail container for the dots -->
+    <div id="hail-container"></div>
 
     <script>
         const snail = document.getElementById('snail');
@@ -71,6 +75,27 @@
             lettuce.style.left = (window.innerWidth - lettuce.offsetWidth - 20) + 'px';
             lettuce.style.top = (window.innerHeight / 2 - lettuce.offsetHeight / 2) + 'px';
         });
+
+        // Hail Effect: Create falling dots
+        function createHail() {
+            const hailContainer = document.getElementById('hail-container');
+            const hailDot = document.createElement('div');
+            hailDot.classList.add('hail-dot');
+
+            // Random horizontal starting position
+            hailDot.style.left = Math.random() * window.innerWidth + 'px';
+
+            // Append the dot to the container
+            hailContainer.appendChild(hailDot);
+
+            // Set a timeout to remove the dot once it reaches the bottom
+            setTimeout(() => {
+                hailContainer.removeChild(hailDot);
+            }, 5000); // Removes the hail dot after 5 seconds
+        }
+
+        // Continuously create hail dots every 200ms
+        setInterval(createHail, 200);
 
     </script>
 </body>
