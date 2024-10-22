@@ -16,34 +16,41 @@
         <img src="images/lettuce.png" alt="Lettuce" id="lettuce">
     </div>
 
+    <!-- Rising snow layer -->
+    <div class="snow-layer"></div>
+
     <!-- Hail container for the dots -->
     <div id="hail-container"></div>
 
     <script>
         const snail = document.getElementById('snail');
         const lettuce = document.getElementById('lettuce');
-        let snailPositionX = 0, snailPositionY = window.innerHeight / 2;
         let snailSpeed = 1; // Speed of the snail's movement
 
         // Variables for dragging the lettuce
         let isDragging = false, offsetX = 0, offsetY = 0;
 
-        // Function to move the snail toward the lettuce
+        // Function to move the snail toward the lettuce and rotate it to face the lettuce
         function moveSnail() {
             const snailRect = snail.getBoundingClientRect();
             const lettuceRect = lettuce.getBoundingClientRect();
 
             // Calculate the distance between the snail and the lettuce
-            const dx = lettuceRect.left - snailRect.left;
-            const dy = lettuceRect.top - snailRect.top;
+            const dx = lettuceRect.left + lettuceRect.width / 2 - (snailRect.left + snailRect.width / 2);
+            const dy = lettuceRect.top + lettuceRect.height / 2 - (snailRect.top + snailRect.height / 2);
 
             // Move the snail towards the lettuce position
-            snailPositionX += dx * snailSpeed / Math.sqrt(dx * dx + dy * dy);
-            snailPositionY += dy * snailSpeed / Math.sqrt(dx * dx + dy * dy);
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance > 1) { // Only move the snail if it's not too close
+                snail.style.left = snail.offsetLeft + (dx * snailSpeed / distance) + 'px';
+                snail.style.top = snail.offsetTop + (dy * snailSpeed / distance) + 'px';
+            }
 
-            // Update the snail's position
-            snail.style.left = snailPositionX + 'px';
-            snail.style.top = snailPositionY + 'px';
+            // Calculate the angle (in radians) and convert it to degrees
+            const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+
+            // Rotate the snail to face the opposite direction (add 180 degrees)
+            snail.style.transform = `rotate(${angle + 180}deg)`;
 
             // Continue moving the snail
             requestAnimationFrame(moveSnail);
@@ -70,9 +77,14 @@
             isDragging = false;
         });
 
-        // Initialize lettuce position to the right side of the screen
+        // Initialize the positions of the snail and lettuce
         window.addEventListener('load', () => {
-            lettuce.style.left = (window.innerWidth - lettuce.offsetWidth - 20) + 'px';
+            // Position the snail on the right side of the screen
+            snail.style.left = (window.innerWidth - snail.offsetWidth - 20) + 'px';
+            snail.style.top = (window.innerHeight / 2 - snail.offsetHeight / 2) + 'px';
+
+            // Position the lettuce on the left side of the screen
+            lettuce.style.left = '20px'; // A bit offset from the edge
             lettuce.style.top = (window.innerHeight / 2 - lettuce.offsetHeight / 2) + 'px';
         });
 
@@ -96,6 +108,21 @@
 
         // Continuously create hail dots every 200ms
         setInterval(createHail, 200);
+
+        // Rising snow layer logic
+        const snowLayer = document.querySelector('.snow-layer');
+        let snowHeight = 0;
+
+        function riseSnow() {
+            // Gradually increase the height of the snow layer
+            snowHeight += 0.1; // You can adjust this value for speed
+            if (snowHeight <= window.innerHeight) {
+                snowLayer.style.height = snowHeight + 'px';
+            }
+        }
+
+        // Continuously increase the snow layer's height over time
+        setInterval(riseSnow, 100); // Adjust the interval for a slower or faster snow rise
 
     </script>
 </body>
