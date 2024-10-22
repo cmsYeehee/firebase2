@@ -429,309 +429,52 @@ window.addEventListener('load', () => {
 
         window.addEventListener('click', (event) => {
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y =  -(event.clientY / window.innerHeight) * 2 + 1;
-  
-               raycaster.setFromCamera(mouse, camera);
-               const intersects = raycaster.intersectObjects(scene.children, true);
-  
-               for (let intersect of intersects) {
-                   let object = intersect.object;
-                   while (object.parent && !object.userData.planet) {
-                       object = object.parent;
-                   }
-                   if (object.userData.planet) {
-                       showPlanetScreen(object.userData.planet.name);
-                       break;
-                   }
-               }
-           });
-       }
-  
-       // Modify your animate function to respect the pause state
-       function animate() {
-           if (animationPaused) {
-               animationRunning = false;
-               return;
-           }
-          
-           requestAnimationFrame(animate);
-           planets.forEach(planet => planet.update());
-           if (star && star.userData.animate) star.userData.animate();
-           renderer.render(scene, camera);
-           animationRunning = true;
-       }
-  
-   function showError(message) {
-       console.error(message);
-       errorMessage.textContent = message;
-       errorMessage.style.display = 'block';
-       setTimeout(() => errorMessage.style.display = 'none', 5000);
-   }
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(scene.children, true);
 
-   function updateLoadingText(text) {
-       loadingText.textContent = text;
-       console.log('Loading status:', text);
-   }
+            for (let intersect of intersects) {
+                let object = intersect.object;
+                while (object.parent && !object.userData.planet) {
+                    object = object.parent;
+                }
+                if (object.userData.planet) {
+                    showPlanetScreen(object.userData.planet.name);
+                    break;
+                }
+            }
+        });
+    }
 
+    function animate() {
+        if (animationPaused) {
+            animationRunning = false;
+            return;
+        }
+        
+        requestAnimationFrame(animate);
+        planets.forEach(planet => planet.update());
+        
+        if (star?.userData.animate) {
+            star.userData.animate();
+        }
+        
+        renderer.render(scene, camera);
+        animationRunning = true;
+    }
 
-   function createBackgroundStars() {
-       const starGeometry = new THREE.BufferGeometry();
-       const starMaterial = new THREE.PointsMaterial({
-           color: 0xFFFFFF,
-           size: 0.25,
-           transparent: true,
-           opacity: 1.0,
-           sizeAttenuation: false
-       });
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    });
 
-
-       const starPositions = [];
-       const starSizes = [];
-
-
-       for (let i = 0; i < CONFIG.STAR_COUNT; i++) {
-           const theta = Math.random() * Math.PI * 2;
-           const phi = Math.acos(2 * Math.random() - 1);
-           const radius = 90 + Math.random() * 10;
-
-
-           starPositions.push(
-               radius * Math.sin(phi) * Math.cos(theta),
-               radius * Math.sin(phi) * Math.sin(theta),
-               radius * Math.cos(phi)
-           );
-
-
-           starSizes.push(0.5 + Math.random() * 0.5);
-       }
-
-
-       starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starPositions, 3));
-       starGeometry.setAttribute('size', new THREE.Float32BufferAttribute(starSizes, 1));
-
-
-       stars = new THREE.Points(starGeometry, starMaterial);
-       scene.add(stars);
-
-
-       function animateStars() {
-           const sizes = starGeometry.attributes.size.array;
-           for (let i = 0; i < sizes.length; i++) {
-               sizes[i] = 0.5 + Math.random() * 0.5;
-           }
-           starGeometry.attributes.size.needsUpdate = true;
-       }
-
-
-       setInterval(animateStars, 1000);
-   }
-
-
-   class Planet {
-       constructor(modelPath, orbitRadius, orbitSpeed, name, description) {
-           this.orbitRadius = orbitRadius;
-           this.orbitSpeed = orbitSpeed;
-           this.angle = Math.random() * Math.PI * 2;
-           this.name = name;
-           this.description = description;
-           this.loaded = false;
-           this.loadModel(modelPath);
-       }
-
-
-       loadModel(modelPath) {
-           updateLoadingText(`Loading ${this.name}...`);
-          
-           const loader = new THREE.GLTFLoader();
-           loader.load(
-               modelPath,
-               (gltf) => {
-                   this.mesh = gltf.scene;
-                   this.mesh.scale.set(0.2, 0.2, 0.2);
-                   this.mesh.userData.planet = this;
-                   this.updatePosition();
-                   scene.add(this.mesh);
-                   this.loaded = true;
-                   updateLoadingText(`${this.name} loaded successfully`);
-               },
-               (progress) => {
-                   const percentComplete = (progress.loaded / progress.total) * 100;
-                   updateLoadingText(`Loading ${this.name}: ${Math.round(percentComplete)}%`);
-               },
-               (error) => {
-                   showError(`Error loading ${this.name}: ${error.message}`);
-               }
-           );
-       }
-
-
-       updatePosition() {
-           if (this.mesh) {
-               const x = Math.cos(this.angle) * this.orbitRadius;
-               const z = Math.sin(this.angle) * this.orbitRadius;
-               this.mesh.position.set(x, 0, z);
-               this.mesh.rotation.y = -this.angle + Math.PI / 2;
-           }
-       }
-
-
-       update() {
-           if (this.mesh && this.loaded) {
-               this.angle += this.orbitSpeed;
-               this.updatePosition();
-               this.mesh.rotation.x = Math.sin(this.angle * 2) * 0.1;
-           }
-       }
-   }
-
-
-   function initScene() {
-       updateLoadingText('Initializing scene...');
-      
-       scene = new THREE.Scene();
-       camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-      
-       renderer = new THREE.WebGLRenderer({
-           antialias: false,
-           alpha: true,
-           powerPreference: "high-performance"
-       });
-      
-       renderer.setSize(window.innerWidth, window.innerHeight);
-       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-       document.getElementById('scene-container').appendChild(renderer.domElement);
-
-
-       camera.position.z = 12;
-       camera.position.y = 3;
-       camera.lookAt(0, 0, 0);
-
-
-       // Add background effects
-       createNebula();
-       createBackgroundStars();
-
-
-       scene.add(new THREE.AmbientLight(0x333333));
-       const starLight = new THREE.PointLight(0x4f9cff, 2, 50);
-       starLight.position.set(0, 0, 0);
-       scene.add(starLight);
-
-
-       updateLoadingText('Scene initialized');
-   }
-
-
-   function loadModels() {
-       updateLoadingText('Starting model loading...');
-
-
-       planets.push(
-           new Planet('models/planets/ocean-planet.glb', 3, 0.01, 'Ocean World',
-               'A serene aquatic paradise filled with vast oceans and floating islands.'),
-           new Planet('models/planets/jungle-planet.glb', 5, 0.007, 'Jungle World',
-               'A lush world teeming with exotic flora and fauna.'),
-           new Planet('models/planets/mountain-planet.glb', 7, 0.005, 'Mountain World',
-               'A rugged landscape of towering peaks and deep valleys.')
-       );
-
-
-       updateLoadingText('Loading star...');
-       const starLoader = new THREE.GLTFLoader();
-       starLoader.load(
-           'models/star/star.glb',
-           (gltf) => {
-               star = gltf.scene;
-               star.scale.set(0.125, 0.125, 0.125);
-               star.position.set(0, 0, 0);
-               scene.add(star);
-               updateLoadingText('Star loaded successfully');
-              
-               star.userData.animate = () => {
-                   const pulseScale = 0.125 + Math.sin(Date.now() * 0.002) * 0.01;
-                   star.scale.set(pulseScale, pulseScale, pulseScale);
-               };
-
-
-               checkLoadingComplete();
-           },
-           (progress) => {
-               const percentComplete = (progress.loaded / progress.total) * 100;
-               updateLoadingText(`Loading star: ${Math.round(percentComplete)}%`);
-           },
-           (error) => {
-               showError(`Error loading star: ${error.message}`);
-           }
-       );
-   }
-
-
-   function checkLoadingComplete() {
-       if (star && planets.every(planet => planet.loaded)) {
-           updateLoadingText('All models loaded successfully');
-           loadingScreen.style.display = 'none';
-       }
-   }
-
-
-   function setupInteraction() {
-       const raycaster = new THREE.Raycaster();
-       const mouse = new THREE.Vector2();
-
-
-       window.addEventListener('mousemove', (event) => {
-           mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-           mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-
-           raycaster.setFromCamera(mouse, camera);
-           const intersects = raycaster.intersectObjects(scene.children, true);
-
-
-           let foundPlanet = false;
-           for (let intersect of intersects) {
-               let object = intersect.object;
-               while (object.parent && !object.userData.planet) {
-                   object = object.parent;
-               }
-               if (object.userData.planet) {
-                   planetInfo.innerHTML = `
-                       <h2>${object.userData.planet.name}</h2>
-                       <p>${object.userData.planet.description}</p>
-                   `;
-                   planetInfo.style.opacity = 1;
-                   foundPlanet = true;
-                   break;
-               }
-           }
-           if (!foundPlanet) {
-               planetInfo.style.opacity = 0;
-           }
-       });
-   }
-
-
-   function animate() {
-       requestAnimationFrame(animate);
-       planets.forEach(planet => planet.update());
-       if (star && star.userData.animate) star.userData.animate();
-       renderer.render(scene, camera);
-   }
-
-
-   window.addEventListener('resize', () => {
-       camera.aspect = window.innerWidth / window.innerHeight;
-       camera.updateProjectionMatrix();
-       renderer.setSize(window.innerWidth, window.innerHeight);
-   });
-
-
-   initScene();
-   loadModels();
-   setupInteraction();
-   animate();
+    // Initialize everything
+    addStyles();
+    createPlanetScreen();
+    initScene();
+    loadModels();
+    setupInteraction();
+    animate();
 });
-
-
-
