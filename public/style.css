@@ -18,7 +18,7 @@ h1 {
     font-family: Arial, sans-serif;
 }
 
-/* Style for the snail image */
+/* Container to hold snail and lettuce */
 .snail-container {
     position: relative;
     width: 100%;
@@ -26,11 +26,18 @@ h1 {
     overflow: hidden;
 }
 
+/* Style for the snail image */
 #snail {
     position: absolute;
     top: 50%;
-    transform: translateY(-50%);
     left: 0;
     width: 100px;
-    transition: transform 0.2s ease; /* For a smoother hover effect */
+    transition: transform 0.2s ease;
+}
+
+/* Style for the lettuce image */
+#lettuce {
+    position: absolute;
+    width: 100px;
+    cursor: grab;
 }

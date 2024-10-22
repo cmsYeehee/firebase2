@@ -3,47 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to My Website!</title>
+    <title>Welcome to my website</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>Welcome to my website</h1>
+    
+    <!-- Snail and lettuce images -->
     <div class="snail-container">
         <img src="images/snail.png" alt="Snail" id="snail">
+        <img src="images/lettuce.png" alt="Lettuce" id="lettuce">
     </div>
 
     <script>
-        // Select the snail element
         const snail = document.getElementById('snail');
-        let position = 0; // Initial position of the snail
-        let isMoving = true; // Control the movement
+        const lettuce = document.getElementById('lettuce');
+        let snailPositionX = 0, snailPositionY = window.innerHeight / 2;
+        let snailSpeed = 1; // Speed of the snail's movement
 
-        // Function to move the snail
+        // Variables for dragging the lettuce
+        let isDragging = false, offsetX = 0, offsetY = 0;
+
+        // Function to move the snail toward the lettuce
         function moveSnail() {
-            if (isMoving) {
-                position += 1; // Move the snail 1 pixel to the right
-                snail.style.left = position + 'px'; // Update snail position
+            const snailRect = snail.getBoundingClientRect();
+            const lettuceRect = lettuce.getBoundingClientRect();
 
-                // If the snail reaches the end of the screen, reset to start
-                if (position < window.innerWidth - snail.offsetWidth) {
-                    requestAnimationFrame(moveSnail);
-                }
-            }
+            // Calculate the distance between the snail and the lettuce
+            const dx = lettuceRect.left - snailRect.left;
+            const dy = lettuceRect.top - snailRect.top;
+
+            // Move the snail towards the lettuce position
+            snailPositionX += dx * snailSpeed / Math.sqrt(dx * dx + dy * dy);
+            snailPositionY += dy * snailSpeed / Math.sqrt(dx * dx + dy * dy);
+
+            // Update the snail's position
+            snail.style.left = snailPositionX + 'px';
+            snail.style.top = snailPositionY + 'px';
+
+            // Continue moving the snail
+            requestAnimationFrame(moveSnail);
         }
 
         // Start moving the snail
         requestAnimationFrame(moveSnail);
 
-        // Stop the snail when the cursor touches it
-        snail.addEventListener('mouseenter', () => {
-            isMoving = false; // Stop the movement
+        // Make the lettuce draggable
+        lettuce.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            offsetX = e.clientX - lettuce.getBoundingClientRect().left;
+            offsetY = e.clientY - lettuce.getBoundingClientRect().top;
         });
 
-        // Resume movement when the cursor leaves the snail
-        snail.addEventListener('mouseleave', () => {
-            isMoving = true; // Resume the movement
-            requestAnimationFrame(moveSnail);
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                lettuce.style.left = (e.clientX - offsetX) + 'px';
+                lettuce.style.top = (e.clientY - offsetY) + 'px';
+            }
         });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        // Initialize lettuce position to the right side of the screen
+        window.addEventListener('load', () => {
+            lettuce.style.left = (window.innerWidth - lettuce.offsetWidth - 20) + 'px';
+            lettuce.style.top = (window.innerHeight / 2 - lettuce.offsetHeight / 2) + 'px';
+        });
+
     </script>
 </body>
 </html>
