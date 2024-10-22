@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Welcome to My Website!</h1>
+    <h1>Welcome to my website</h1>
     <p class="note">The snail will follow the lettuce.</p>
 
     <!-- Snail and lettuce images -->
@@ -22,10 +22,27 @@
     <!-- Hail container for the dots -->
     <div id="hail-container"></div>
 
+    <!-- Audio element for the "hi" sound -->
+    <audio id="hiSound" src="audio/hi.mp3"></audio> <!-- Make sure you have this mp3 file in the correct folder -->
+
     <script>
         const snail = document.getElementById('snail');
         const lettuce = document.getElementById('lettuce');
         let snailSpeed = 1; // Speed of the snail's movement
+
+        // Play the "hi" sound when the website is loaded
+        window.addEventListener('load', () => {
+            const hiSound = document.getElementById('hiSound');
+            hiSound.play();
+
+            // Position the snail on the right side of the screen
+            snail.style.left = (window.innerWidth - snail.offsetWidth - 20) + 'px';
+            snail.style.top = (window.innerHeight / 2 - snail.offsetHeight / 2) + 'px';
+
+            // Position the lettuce on the left side of the screen
+            lettuce.style.left = '20px'; // A bit offset from the edge
+            lettuce.style.top = (window.innerHeight / 2 - lettuce.offsetHeight / 2) + 'px';
+        });
 
         // Variables for dragging the lettuce
         let isDragging = false, offsetX = 0, offsetY = 0;
@@ -75,17 +92,6 @@
 
         document.addEventListener('mouseup', () => {
             isDragging = false;
-        });
-
-        // Initialize the positions of the snail and lettuce
-        window.addEventListener('load', () => {
-            // Position the snail on the right side of the screen
-            snail.style.left = (window.innerWidth - snail.offsetWidth - 20) + 'px';
-            snail.style.top = (window.innerHeight / 2 - snail.offsetHeight / 2) + 'px';
-
-            // Position the lettuce on the left side of the screen
-            lettuce.style.left = '20px'; // A bit offset from the edge
-            lettuce.style.top = (window.innerHeight / 2 - lettuce.offsetHeight / 2) + 'px';
         });
 
         // Hail Effect: Create falling dots
