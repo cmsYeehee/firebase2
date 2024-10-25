@@ -171,3 +171,58 @@ body {
         width: 250px;
     }
 }
+.comet-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 10px 15px;
+    border-radius: 8px;
+    backdrop-filter: blur(5px);
+}
+
+.comet-toggle label {
+    color: white;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    user-select: none;
+    cursor: pointer;
+}
+
+.comet-toggle input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.comet {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.comet::before {
+    content: '';
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8);
+}
+
+.comet::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 0;
+    width: 100px;
+    height: 2px;
+    background: linear-gradient(to left, transparent, white);
+    transform: translateY(-50%);
+}

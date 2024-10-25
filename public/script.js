@@ -161,7 +161,118 @@ function showPlanetScreen(planetName) {
     screen.classList.add('active');
     pauseAnimation();
 }
+class CometSystem {
+    constructor() {
+        this.comets = [];
+        this.active = false;
+        this.container = document.createElement('div');
+        this.container.style.position = 'fixed';
+        this.container.style.top = '0';
+        this.container.style.left = '0';
+        this.container.style.width = '100%';
+        this.container.style.height = '100%';
+        this.container.style.pointerEvents = 'none';
+        this.container.style.zIndex = '0';
+        document.body.appendChild(this.container);
+        
+        this.createToggle();
+        this.animate = this.animate.bind(this);
+        this.lastCometTime = 0;
+        this.cometInterval = 2000; // New comet every 2 seconds
+    }
 
+    createToggle() {
+        const toggleContainer = document.createElement('div');
+        toggleContainer.className = 'comet-toggle';
+        
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = 'comet-toggle';
+        
+        const label = document.createElement('label');
+        label.htmlFor = 'comet-toggle';
+        label.textContent = 'Show Comets';
+        
+        toggleContainer.appendChild(checkbox);
+        toggleContainer.appendChild(label);
+        document.body.appendChild(toggleContainer);
+        
+        checkbox.addEventListener('change', (e) => {
+            this.active = e.target.checked;
+            if (this.active) {
+                this.start();
+            } else {
+                this.stop();
+            }
+        });
+    }
+
+    createComet() {
+        const comet = document.createElement('div');
+        comet.className = 'comet';
+        
+        // Random starting position above the screen
+        const startX = Math.random() * window.innerWidth;
+        const startY = -50;
+        
+        // Random ending position below the screen
+        const endX = startX - (Math.random() * 500 + 200);
+        const endY = window.innerHeight + 50;
+        
+        comet.style.left = `${startX}px`;
+        comet.style.top = `${startY}px`;
+        
+        // Random rotation for varied angles
+        const angle = Math.atan2(endY - startY, endX - startX);
+        comet.style.transform = `rotate(${angle}rad)`;
+        
+        this.container.appendChild(comet);
+        
+        // Animate the comet
+        const duration = Math.random() * 1000 + 1000; // 1-2 seconds
+        const animation = comet.animate([
+            { opacity: 0, transform: `rotate(${angle}rad) translateX(0)` },
+            { opacity: 1, transform: `rotate(${angle}rad) translateX(100px)`, offset: 0.1 },
+            { opacity: 1, transform: `rotate(${angle}rad) translateX(${Math.hypot(endX - startX, endY - startY)}px)`, offset: 0.8 },
+            { opacity: 0, transform: `rotate(${angle}rad) translateX(${Math.hypot(endX - startX, endY - startY)}px)` }
+        ], {
+            duration: duration,
+            easing: 'linear'
+        });
+        
+        animation.onfinish = () => {
+            comet.remove();
+            const index = this.comets.indexOf(comet);
+            if (index > -1) {
+                this.comets.splice(index, 1);
+            }
+        };
+        
+        this.comets.push(comet);
+    }
+
+    animate(currentTime) {
+        if (!this.active) return;
+        
+        if (currentTime - this.lastCometTime > this.cometInterval) {
+            this.createComet();
+            this.lastCometTime = currentTime;
+        }
+        
+        requestAnimationFrame(this.animate);
+    }
+
+    start() {
+        this.active = true;
+        this.animate(performance.now());
+    }
+
+    stop() {
+        this.active = false;
+        this.comets.forEach(comet => comet.remove());
+        this.comets = [];
+    }
+}
 window.addEventListener('load', () => {
     // Scene variables
     let scene, camera, renderer, planets = [], star, stars;
@@ -334,6 +445,7 @@ window.addEventListener('load', () => {
         camera.position.z = 12;
         camera.position.y = 3;
         camera.lookAt(0, 0, 0);
+        const cometSystem = new CometSystem();
 
         createNebula();
         createBackgroundStars();
