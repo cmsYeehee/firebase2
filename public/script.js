@@ -273,6 +273,41 @@ class CometSystem {
         this.comets = [];
     }
 }
+class VisitCounter {
+        constructor() {
+            this.createCounter();
+            this.incrementCount();
+        }
+    
+        createCounter() {
+            const counter = document.createElement('div');
+            counter.className = 'visit-counter';
+            
+            // Get current count from localStorage or start at 0
+            const currentCount = this.getCount();
+            
+            counter.innerHTML = `
+                Explored <span>${currentCount}</span> times
+            `;
+            
+            document.body.appendChild(counter);
+        }
+    
+        getCount() {
+            return parseInt(localStorage.getItem('explorationCount') || '0');
+        }
+    
+        incrementCount() {
+            const newCount = this.getCount() + 1;
+            localStorage.setItem('explorationCount', newCount.toString());
+            
+            // Update the display
+            const counterSpan = document.querySelector('.visit-counter span');
+            if (counterSpan) {
+                counterSpan.textContent = newCount;
+            }
+        }
+    }
 window.addEventListener('load', () => {
     // Scene variables
     let scene, camera, renderer, planets = [], star, stars;
@@ -449,6 +484,7 @@ window.addEventListener('load', () => {
 
         createNebula();
         createBackgroundStars();
+        const visitCounter = new VisitCounter();
 
         scene.add(new THREE.AmbientLight(0x333333));
         const starLight = new THREE.PointLight(0x4f9cff, 2, 50);

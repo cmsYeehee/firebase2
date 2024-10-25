@@ -226,3 +226,33 @@ body {
     background: linear-gradient(to left, transparent, white);
     transform: translateY(-50%);
 }
+.visit-counter {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 10px 20px;
+    border-radius: 8px;
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(79, 156, 255, 0.3);
+    margin-top: 60px; /* Space below the Welcome Explorer text */
+}
+
+.visit-counter span {
+    color: #4f9cff;
+    font-weight: bold;
+    font-size: 1.2em;
+    text-shadow: 0 0 10px rgba(79, 156, 255, 0.5);
+}
+
+@media (max-width: 768px) {
+    .visit-counter {
+        font-size: 14px;
+        padding: 8px 15px;
+    }
+}
