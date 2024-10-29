@@ -329,7 +329,7 @@ window.addEventListener('load', () => {
                 return this.modelCache.get(path).clone();
             }
             
-            const loader = new THREE.GLTFLoader();
+            const loader = new window.GLTFLoader();
             const gltf = await new Promise((resolve, reject) => {
                 loader.load(path, resolve, undefined, reject);
             });
@@ -421,7 +421,7 @@ window.addEventListener('load', () => {
         loadModel(modelPath) {
             updateLoadingText(`Loading ${this.name}...`);
             
-            const loader = new THREE.GLTFLoader();
+            const loader = new window.GLTFLoader();
             loader.load(
                 modelPath,
                 (gltf) => {
@@ -507,7 +507,7 @@ window.addEventListener('load', () => {
         );
 
         updateLoadingText('Loading star...');
-        const starLoader = new THREE.GLTFLoader();
+        const starLoader = new window.GLTFLoader();
         starLoader.load(
             'models/star/star.glb',
             (gltf) => {

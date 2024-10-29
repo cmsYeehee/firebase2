@@ -4,13 +4,12 @@ import 'firebase/firestore';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID",
-  measurementId: "YOUR_MEASUREMENT_ID"
+  apiKey: "AIzaSyCvPK986ukR-ZeqxWIc7-F2gEvPZ_-v6P4",
+  authDomain: "topicsisaclass.firebaseapp.com",
+  projectId: "topicsisaclass",
+  storageBucket: "topicsisaclass.appspot.com",
+  messagingSenderId: "29876524126",
+  appId: "1:29876524126:web:e0932cae4c90df79c150cf"
 };
 
 // Initialize Firebase
